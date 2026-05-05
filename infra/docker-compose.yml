@@ -1,0 +1,37 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: codecopilot-db
+    environment:
+      POSTGRES_USER: codecopilot
+      POSTGRES_PASSWORD: codecopilot
+      POSTGRES_DB: codecopilot
+    ports:
+      - "5433:5432"
+    volumes:
+      - codecopilot-pgdata:/var/lib/postgresql/data
+      - ./db-init/01-extensions.sql:/docker-entrypoint-initdb.d/01-extensions.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codecopilot -d codecopilot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: codecopilot-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - codecopilot-redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  codecopilot-pgdata:
+  codecopilot-redisdata:
