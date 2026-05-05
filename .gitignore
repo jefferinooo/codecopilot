@@ -29,3 +29,4 @@ build/
 /data/
 /tmp/
 *.sqlite
+.envrc
