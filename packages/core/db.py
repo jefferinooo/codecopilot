@@ -5,8 +5,7 @@ Design notes:
   runs, returns it. No per-query TCP overhead.
 - Registers a vector codec on every new connection so we can pass
   Python lists directly into VECTOR columns and read them back.
-- Single global pool, lazily initialized. Worker processes that don't
-  need DB access never pay the connection cost.
+- Single global pool, lazily initialized.
 """
 from __future__ import annotations
 
@@ -31,12 +30,7 @@ def _normalize_url(url: str) -> str:
 
 
 async def _init_connection(conn: asyncpg.Connection) -> None:
-    """Set up codecs every new pool connection needs.
-
-    pgvector ships with PostgreSQL's `vector` type. We tell asyncpg how to
-    convert between Python lists/tuples and the textual wire format pgvector
-    uses ('[1.0,2.0,3.0]').
-    """
+    """Set up codecs and session settings for every new pool connection."""
     await conn.set_type_codec(
         "vector",
         encoder=lambda v: "[" + ",".join(str(x) for x in v) + "]",
@@ -44,7 +38,6 @@ async def _init_connection(conn: asyncpg.Connection) -> None:
         schema="public",
         format="text",
     )
-    # JSONB as Python dicts/lists, not strings
     await conn.set_type_codec(
         "jsonb",
         encoder=json.dumps,
@@ -52,6 +45,10 @@ async def _init_connection(conn: asyncpg.Connection) -> None:
         schema="pg_catalog",
         format="text",
     )
+    # IVFFlat default probes=1 returns empty results under selective WHERE
+    # filters because only one cluster is searched. 10 is the standard
+    # recommendation for lists=100. We'll migrate to HNSW later.
+    await conn.execute("SET ivfflat.probes = 10")
 
 
 async def get_pool() -> asyncpg.Pool:
