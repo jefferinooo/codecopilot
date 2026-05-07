@@ -58,36 +58,39 @@ codebase that doesn't implement JWT), the system honestly refuses
 rather than fabricating an answer.
 
 ## Architecture
-            ┌──────────────┐
-            │  HTTP client │
-            └──────┬───────┘
-                   │
-              POST /query
-                   │
-            ┌──────▼───────┐
-            │   FastAPI    │
-            └──────┬───────┘
-                   │
-   ┌───────────────┼───────────────┐
-   │               │               │
-┌───▼────┐     ┌────▼─────┐    ┌────▼─────┐
-│ Vector │     │ Keyword  │    │ Reranker │
-│ search │     │  (BM25)  │    │ (Claude) │
-└───┬────┘     └────┬─────┘    └────┬─────┘
-│               │               │
-└───────┬───────┘               │
-│                       │
-(RRF fuse)                 │
-│                       │
-└───────────┬───────────┘
-│
-┌────────▼────────┐
-│ Answer streamer │
-│ (Claude Sonnet) │
-└────────┬────────┘
-│
-streamed
-response
+
+```
+                  HTTP client
+                       |
+                  POST /query
+                       |
+                    FastAPI
+                       |
+        +--------------+--------------+
+        |              |              |
+   Vector search   Keyword search   (parallel)
+   (pgvector       (Postgres
+    HNSW)          BM25/tsvector)
+        |              |
+        +------+-------+
+               |
+        Reciprocal Rank Fusion
+               |
+        LLM reranker
+        (Claude Haiku, 1-5 scoring)
+               |
+        Answer streamer
+        (Claude Sonnet, cited)
+               |
+        streamed response
+```
+
+### Key engineering decisions
+
+- **AST-aware chunking** (tree-sitter): each chunk is a coherent semantic unit (function, class, method) rather than a fixed-size byte window. Class chunks include docstrings and field declarations; decorators and leading comments stay attached to the methods they describe.
+- **Two-stage retrieval**: a recall-optimized first stage (hybrid + RRF) followed by a precision-optimized second stage (LLM reranker scoring 1-5 with reasoning). This is the production pattern behind most modern search systems.
+- **HNSW over IVFFlat**: switched the vector index after diagnosing truncated results under selective `WHERE` filters caused by IVFFlat's cold-start centroid problem.
+- **Calibrated uncertainty**: when the reranker produces only weak relevance scores, the answer prompt steers the model to refuse rather than fabricate.
 
 ### Key engineering decisions
 
@@ -165,28 +168,31 @@ Interactive API docs are auto-generated at
 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
 ## Project layout
+
+```
 codecopilot/
-├── apps/
-│   ├── api/              # FastAPI HTTP layer
-│   │   ├── main.py
-│   │   └── routers/
-│   └── workers/
-│       └── ingestion.py  # CLI: walk + chunk + embed + persist
-├── packages/
-│   ├── core/
-│   │   ├── chunking/     # tree-sitter AST chunking + size cap
-│   │   ├── retrieval/    # vector + keyword + RRF + reranker
-│   │   ├── prompts/      # mode-specific prompt templates
-│   │   ├── llm/          # OpenAI embeddings, Anthropic completions
-│   │   ├── answer.py     # streaming answer generator
-│   │   └── db.py         # async Postgres + pgvector client
-│   └── shared/
-│       └── models.py     # Pydantic request/response schemas
-├── infra/
-│   ├── docker-compose.yml
-│   ├── alembic.ini
-│   └── migrations/
-└── requirements.txt
+  apps/
+    api/                  FastAPI HTTP layer
+      main.py
+      routers/
+    workers/
+      ingestion.py        CLI: walk, chunk, embed, persist
+  packages/
+    core/
+      chunking/           tree-sitter AST chunking + size cap
+      retrieval/          vector + keyword + RRF + reranker
+      prompts/            mode-specific prompt templates
+      llm/                OpenAI embeddings, Anthropic completions
+      answer.py           streaming answer generator
+      db.py               async Postgres + pgvector client
+    shared/
+      models.py           Pydantic request/response schemas
+  infra/
+    docker-compose.yml
+    alembic.ini
+    migrations/
+  requirements.txt
+```
 
 ## Roadmap
 
