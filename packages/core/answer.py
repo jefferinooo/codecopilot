@@ -1,9 +1,4 @@
-"""Generate streamed natural-language answers from retrieved chunks.
-
-This is the orchestrator that ties retrieval + prompt + LLM streaming
-together. It's deliberately narrow: it knows about modes and chunks,
-not about HTTP or persistence. The HTTP layer wraps it.
-"""
+"""Generate streamed natural-language answers from retrieved chunks."""
 from __future__ import annotations
 
 from typing import AsyncIterator
@@ -12,22 +7,35 @@ from uuid import UUID
 from . import db
 from .llm.client import ANSWER_MODEL, LLMClient
 from .llm.embeddings import EmbeddingClient
+from .prompts.debug import (
+    SYSTEM_PROMPT as DEBUG_SYSTEM,
+    build_user_prompt as build_debug_user,
+)
 from .prompts.explain import (
     ChunkContext,
     SYSTEM_PROMPT as EXPLAIN_SYSTEM,
     build_user_prompt as build_explain_user,
 )
+from .prompts.refactor import (
+    SYSTEM_PROMPT as REFACTOR_SYSTEM,
+    build_user_prompt as build_refactor_user,
+)
+from .prompts.trace import (
+    SYSTEM_PROMPT as TRACE_SYSTEM,
+    build_user_prompt as build_trace_user,
+)
 from .retrieval.pipeline import retrieve
 
 
-# Each mode's prompt set. As we add Trace/Debug/Refactor, register them here.
 PROMPTS = {
-    "explain": (EXPLAIN_SYSTEM, build_explain_user),
+    "explain":  (EXPLAIN_SYSTEM,  build_explain_user),
+    "trace":    (TRACE_SYSTEM,    build_trace_user),
+    "debug":    (DEBUG_SYSTEM,    build_debug_user),
+    "refactor": (REFACTOR_SYSTEM, build_refactor_user),
 }
 
 
 async def _hydrate_chunks(hits) -> list[ChunkContext]:
-    """Look up full content for the re-ranked hits, preserving order."""
     if not hits:
         return []
     rows = await db.fetch(
@@ -66,11 +74,6 @@ async def answer(
     llm: LLMClient,
     top_k: int = 8,
 ) -> AsyncIterator[str]:
-    """Yield text chunks of the answer as they stream from the model.
-
-    Pipeline:
-      hybrid retrieval → re-rank → hydrate → mode prompt → stream
-    """
     if mode not in PROMPTS:
         raise ValueError(f"unknown mode: {mode!r}; known: {list(PROMPTS)}")
 
@@ -83,8 +86,6 @@ async def answer(
     contexts = await _hydrate_chunks(hits)
     user_prompt = build_user(question, contexts)
 
-    # The streaming API is sync; we yield chunks from inside an async
-    # generator. This works because the SDK's stream is a regular iterator.
     for piece in llm.stream(
         model=ANSWER_MODEL,
         system=system_prompt,
