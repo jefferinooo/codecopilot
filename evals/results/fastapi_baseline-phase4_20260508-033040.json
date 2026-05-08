@@ -1,0 +1,389 @@
+{
+  "repo": "fastapi",
+  "tag": "baseline-phase4",
+  "timestamp": "20260508-033040",
+  "elapsed_seconds": 784.1,
+  "overall": {
+    "correctness": 4.15,
+    "relevance": 4.85,
+    "completeness": 4,
+    "avg": 4.33
+  },
+  "by_mode": {
+    "explain": {
+      "n": 12,
+      "correctness": 4.5,
+      "relevance": 4.83,
+      "completeness": 4.42
+    },
+    "trace": {
+      "n": 3,
+      "correctness": 4,
+      "relevance": 5,
+      "completeness": 3.67
+    },
+    "debug": {
+      "n": 3,
+      "correctness": 3.67,
+      "relevance": 4.67,
+      "completeness": 3.33
+    },
+    "refactor": {
+      "n": 2,
+      "correctness": 3,
+      "relevance": 5,
+      "completeness": 3
+    }
+  },
+  "results": [
+    {
+      "id": "fastapi-001",
+      "mode": "explain",
+      "question": "How does dependency injection work?",
+      "retrieved_paths": [
+        "dependencies/models.py",
+        "dependencies/utils.py",
+        "param_functions.py",
+        "routing.py"
+      ],
+      "answer_chars": 3364,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-002",
+      "mode": "explain",
+      "question": "How does FastAPI route requests to handlers?",
+      "retrieved_paths": [
+        "applications.py",
+        "routing.py"
+      ],
+      "answer_chars": 2596,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-003",
+      "mode": "explain",
+      "question": "How is request validation done?",
+      "retrieved_paths": [
+        "_compat/v2.py",
+        "exception_handlers.py",
+        "exceptions.py",
+        "openapi/models.py",
+        "openapi/utils.py"
+      ],
+      "answer_chars": 2044,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-004",
+      "mode": "explain",
+      "question": "How are response models serialized to JSON?",
+      "retrieved_paths": [
+        "_compat/v2.py",
+        "routing.py"
+      ],
+      "answer_chars": 2317,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-005",
+      "mode": "explain",
+      "question": "What does the OAuth2PasswordBearer dependency do?",
+      "retrieved_paths": [
+        "security/__init__.py",
+        "security/oauth2.py"
+      ],
+      "answer_chars": 1700,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-006",
+      "mode": "explain",
+      "question": "How does FastAPI handle CORS?",
+      "retrieved_paths": [
+        "__init__.py",
+        "__main__.py",
+        "applications.py",
+        "exceptions.py",
+        "logger.py",
+        "middleware/cors.py"
+      ],
+      "answer_chars": 987,
+      "judgment": {
+        "correctness": 5,
+        "relevance": 5,
+        "completeness": 5,
+        "avg": 5.0
+      }
+    },
+    {
+      "id": "fastapi-007",
+      "mode": "explain",
+      "question": "How does FastAPI handle JWT authentication?",
+      "retrieved_paths": [
+        "__init__.py",
+        "security/__init__.py",
+        "security/http.py",
+        "security/oauth2.py"
+      ],
+      "answer_chars": 2021,
+      "judgment": {
+        "correctness": 5,
+        "relevance": 3,
+        "completeness": 4,
+        "avg": 4.0
+      }
+    },
+    {
+      "id": "fastapi-008",
+      "mode": "explain",
+      "question": "How does background task execution work?",
+      "retrieved_paths": [
+        "background.py",
+        "dependencies/utils.py",
+        "routing.py"
+      ],
+      "answer_chars": 2222,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-009",
+      "mode": "explain",
+      "question": "What does the @app.exception_handler decorator do?",
+      "retrieved_paths": [
+        "applications.py",
+        "exception_handlers.py",
+        "exceptions.py"
+      ],
+      "answer_chars": 1827,
+      "judgment": {
+        "correctness": 5,
+        "relevance": 5,
+        "completeness": 5,
+        "avg": 5.0
+      }
+    },
+    {
+      "id": "fastapi-010",
+      "mode": "explain",
+      "question": "How does FastAPI generate OpenAPI schemas?",
+      "retrieved_paths": [
+        "applications.py",
+        "openapi/models.py",
+        "openapi/utils.py"
+      ],
+      "answer_chars": 2409,
+      "judgment": {
+        "correctness": 5,
+        "relevance": 5,
+        "completeness": 5,
+        "avg": 5.0
+      }
+    },
+    {
+      "id": "fastapi-011",
+      "mode": "trace",
+      "question": "Walk me through how a path parameter gets from the URL to the handler argument.",
+      "retrieved_paths": [
+        "openapi/models.py",
+        "param_functions.py",
+        "params.py",
+        "routing.py",
+        "utils.py"
+      ],
+      "answer_chars": 2389,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 3,
+        "avg": 4.0
+      }
+    },
+    {
+      "id": "fastapi-012",
+      "mode": "trace",
+      "question": "Walk me through how a request flows from arrival to response.",
+      "retrieved_paths": [
+        "routing.py"
+      ],
+      "answer_chars": 4919,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-013",
+      "mode": "trace",
+      "question": "Trace how the FastAPI() constructor configures middleware.",
+      "retrieved_paths": [
+        "__init__.py",
+        "applications.py",
+        "middleware/__init__.py"
+      ],
+      "answer_chars": 2809,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-014",
+      "mode": "debug",
+      "question": "What could cause a dependency to be silently injected as None?",
+      "retrieved_paths": [
+        "param_functions.py",
+        "params.py",
+        "security/oauth2.py"
+      ],
+      "answer_chars": 3111,
+      "judgment": {
+        "correctness": 5,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.67
+      }
+    },
+    {
+      "id": "fastapi-015",
+      "mode": "debug",
+      "question": "Why might a path operation return 422 unexpectedly?",
+      "retrieved_paths": [
+        "applications.py",
+        "openapi/utils.py",
+        "routing.py",
+        "utils.py"
+      ],
+      "answer_chars": 3370,
+      "judgment": {
+        "correctness": 2,
+        "relevance": 4,
+        "completeness": 2,
+        "avg": 2.67
+      }
+    },
+    {
+      "id": "fastapi-016",
+      "mode": "debug",
+      "question": "What could cause a websocket to disconnect immediately after accept?",
+      "retrieved_paths": [
+        "applications.py",
+        "exception_handlers.py",
+        "exceptions.py",
+        "routing.py"
+      ],
+      "answer_chars": 3925,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-017",
+      "mode": "refactor",
+      "question": "How could the solve_dependencies function be simplified?",
+      "retrieved_paths": [
+        "dependencies/models.py",
+        "dependencies/utils.py",
+        "routing.py"
+      ],
+      "answer_chars": 4882,
+      "judgment": {
+        "correctness": 4,
+        "relevance": 5,
+        "completeness": 4,
+        "avg": 4.33
+      }
+    },
+    {
+      "id": "fastapi-018",
+      "mode": "refactor",
+      "question": "Suggest a refactor for repeated parameter analysis logic in the codebase.",
+      "retrieved_paths": [
+        "dependencies/utils.py",
+        "openapi/utils.py"
+      ],
+      "answer_chars": 7399,
+      "judgment": {
+        "correctness": 2,
+        "relevance": 5,
+        "completeness": 2,
+        "avg": 3.0
+      }
+    },
+    {
+      "id": "fastapi-019",
+      "mode": "explain",
+      "question": "What are scope='request' and scope='function' on Depends?",
+      "retrieved_paths": [
+        "dependencies/models.py",
+        "dependencies/utils.py",
+        "param_functions.py",
+        "params.py",
+        "routing.py"
+      ],
+      "answer_chars": 2388,
+      "judgment": {
+        "correctness": 5,
+        "relevance": 5,
+        "completeness": 5,
+        "avg": 5.0
+      }
+    },
+    {
+      "id": "fastapi-020",
+      "mode": "explain",
+      "question": "How does dependency caching work within a single request?",
+      "retrieved_paths": [
+        "dependencies/models.py",
+        "dependencies/utils.py",
+        "param_functions.py",
+        "params.py",
+        "routing.py"
+      ],
+      "answer_chars": 2480,
+      "judgment": {
+        "correctness": 5,
+        "relevance": 5,
+        "completeness": 5,
+        "avg": 5.0
+      }
+    }
+  ]
+}
