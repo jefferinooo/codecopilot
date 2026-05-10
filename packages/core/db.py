@@ -31,11 +31,27 @@ def _normalize_url(url: str) -> str:
 
 async def _init_connection(conn: asyncpg.Connection) -> None:
     """Set up codecs and session settings for every new pool connection."""
+    # Find which schema actually owns the `vector` type. On local dev that's
+    # `public`; on Supabase it's `extensions`. Asking the catalog avoids
+    # hardcoding either way.
+    vector_schema = await conn.fetchval(
+        """
+        SELECT n.nspname FROM pg_type t
+        JOIN pg_namespace n ON t.typnamespace = n.oid
+        WHERE t.typname = 'vector'
+        LIMIT 1
+        """
+    )
+    if vector_schema is None:
+        raise RuntimeError(
+            "vector type not found. Enable the pgvector extension "
+            "(CREATE EXTENSION vector) before connecting."
+        )
     await conn.set_type_codec(
         "vector",
         encoder=lambda v: "[" + ",".join(str(x) for x in v) + "]",
         decoder=lambda s: [float(x) for x in s.strip("[]").split(",")] if s else [],
-        schema="public",
+        schema=vector_schema,
         format="text",
     )
     await conn.set_type_codec(
@@ -45,10 +61,6 @@ async def _init_connection(conn: asyncpg.Connection) -> None:
         schema="pg_catalog",
         format="text",
     )
-    # IVFFlat default probes=1 returns empty results under selective WHERE
-    # filters because only one cluster is searched. 10 is the standard
-    # recommendation for lists=100. We'll migrate to HNSW later.
-    await conn.execute("SET ivfflat.probes = 10")
 
 
 async def get_pool() -> asyncpg.Pool:
@@ -65,6 +77,11 @@ async def get_pool() -> asyncpg.Pool:
             min_size=2,
             max_size=10,
             init=_init_connection,
+            # Required for pgbouncer-fronted Postgres (e.g. Supabase pooler):
+            # transaction-mode poolers don't support PG prepared statements,
+            # which asyncpg uses by default. Setting cache size to 0 disables
+            # them. Slight performance cost; entirely correctness-preserving.
+            statement_cache_size=0,
         )
     return _pool
 

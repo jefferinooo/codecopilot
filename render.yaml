@@ -1,0 +1,20 @@
+# Render deployment config — API only. Database is hosted on Supabase.
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: codecopilot-api
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      cd infra && alembic upgrade head && cd ..
+    startCommand: uvicorn apps.api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false  # paste Supabase connection string in dashboard
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false

@@ -31,11 +31,13 @@ def upgrade() -> None:
         USING hnsw (embedding vector_cosine_ops)
         WITH (m = 16, ef_construction = 64);
     """)
-    op.execute("ALTER DATABASE codecopilot SET hnsw.ef_search = 100;")
+    dbname = op.get_bind().exec_driver_sql("SELECT current_database()").scalar()
+    op.execute(f"ALTER DATABASE {dbname} SET hnsw.ef_search = 100;")
 
 
 def downgrade() -> None:
-    op.execute("ALTER DATABASE codecopilot RESET hnsw.ef_search;")
+    dbname = op.get_bind().exec_driver_sql("SELECT current_database()").scalar()
+    op.execute(f"ALTER DATABASE {dbname} RESET hnsw.ef_search;")
     op.execute("DROP INDEX IF EXISTS chunks_embedding_idx;")
     op.execute("""
         CREATE INDEX chunks_embedding_idx
