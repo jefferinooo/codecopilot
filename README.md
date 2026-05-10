@@ -219,8 +219,7 @@ codecopilot/
 - [x] **Phase 2** — Hybrid retrieval + LLM reranking + Explain mode + streaming HTTP API
 - [x] **Phase 3a** — Trace, Debug, and Refactor answer modes
 - [x] **Phase 4** — LLM-as-judge evaluation pipeline + 20-question golden set + eval dashboard endpoint
-- [ ] **Phase 5** — Public deployment, demo GIF, README polish
-- [ ] **Phase 3b** — Next.js UI with chat interface and snippet inspector (optional)
+- [x] **Phase 5** — Public deployment, demo
 
 ## License
 
