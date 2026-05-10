@@ -2,7 +2,9 @@
 
 AI-powered code search and Q&A over Python repositories. Point it at a repo, ask a question in natural language, and get a grounded answer with citations to specific files and line ranges.
 
-> **Status:** Phases 0–4 of 5 complete. Backend pipeline (ingestion, hybrid retrieval, LLM reranking, four answer modes, evaluation system) ships end-to-end with a baseline of **4.33/5** on a hand-labeled 20-question golden set. Public deployment and demo recording are in progress.
+> **Live Demo:** [https://codecopilot-api-virx.onrender.com/docs](https://codecopilot-api-virx.onrender.com/docs)
+
+> **Status:** Phases 0–5 complete. End-to-end RAG pipeline (ingestion, hybrid retrieval, LLM reranking, four answer modes, evaluation system) deployed at the URL above with a baseline of **4.33/5** on a hand-labeled 20-question golden set.
 
 ## Quality
 
