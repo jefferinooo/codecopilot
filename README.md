@@ -6,6 +6,16 @@ AI-powered code search and Q&A over Python repositories. Point it at a repo, ask
 
 > **Status:** Phases 0–5 complete. End-to-end RAG pipeline (ingestion, hybrid retrieval, LLM reranking, four answer modes, evaluation system) deployed at the URL above with a baseline of **4.33/5** on a hand-labeled 20-question golden set.
 
+## Try it
+
+```bash
+curl -N -X POST https://codecopilot-api-virx.onrender.com/query \
+  -H "Content-Type: application/json" \
+  -d '{"repo": "fastapi", "mode": "explain", "question": "How does dependency injection work?"}'
+```
+
+(First request may take ~30s due to free-tier cold start; subsequent are fast.)
+
 ## Quality
 
 Baseline scores from a 20-question golden set against FastAPI's source code:
