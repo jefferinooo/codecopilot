@@ -4,6 +4,8 @@ AI-powered code search and Q&A over Python repositories. Point it at a repo, ask
 
 > **Live Demo:** [https://codecopilot-api-virx.onrender.com/docs](https://codecopilot-api-virx.onrender.com/docs)
 
+![CodeCopilot demo: streaming a cited answer from the live deployment](docs/demo.gif)
+
 > **Status:** Phases 0–5 complete. End-to-end RAG pipeline (ingestion, hybrid retrieval, LLM reranking, four answer modes, evaluation system) deployed at the URL above with a baseline of **4.33/5** on a hand-labeled 20-question golden set.
 
 ## Try it
